@@ -1,0 +1,604 @@
+<!doctype html>
+<html class="no-js" lang="pt-br">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GVP-Apontamento de Parada</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/foundation.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+    <style>
+        table {
+            margin-bottom: 0 !important;
+        }
+
+        .graficos {
+            background-color: #ffffff;
+            min-height: 410px;
+        }
+
+        body {
+            background-color: #ffffff;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="off-canvas-wrapper">
+        <div class="off-canvas-wrapper-inner" data-off-canvas-wrapper>
+            <div class="title-bar topo" data-responsive-toggle="widemenu" data-hide-for="Large">
+                <!-- <a href="index.html" class="icon-undo2 voltar"></a> -->
+
+                <span class="titulo">GVP-Apontamento de Parada</span>
+                <div class="title-bar-right">
+                    <button class="" type="button"></button>
+                </div>
+            </div>
+            <div class="off-canvas position-right" id="offCanvasRight" data-off-canvas data-position="right">
+                <ul class="vertical dropdown menu" id="menu" data-dropdown-menu></ul> -->
+            </div>
+            <div class="off-canvas-content" data-off-canvas-content>
+                <div class="row small-up-1 medium-up-2 large-up-3 wrap">
+
+                    <div class="column item" style="text-align:center">
+                        <div class="modulo">
+                            <h1><small></small>
+
+                                <style>
+                                    th {
+                                        font-size: 10pt;
+                                    }
+                                </style>
+                                <table class="responsive">
+                                    <form enctype="application/json" class="contact100-form validate-form" method="post"
+                                        action="#">
+                                        <input id="Filial" type="hidden" name="Filial" value="0104" />
+                                        <tr>
+                                            <th>Filial</th>
+                                            <td>
+                                                <p>0104</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Mesa</th>
+                                            <td>
+                                                <select name="Mesa" id="Mesa">
+                                                </select>
+                                                <div id="dados_setup"></div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Área</th>
+                                            <td>
+                                                <select name="Area" id="Area">
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Problema (Equipamento)</th>
+                                            <td>
+                                                <select name="Problema" id="Problema">
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr hidden>
+                                            <th>Data Inicial</th>
+                                            <td><input name="DtIni" id="DtIni" type="date" /></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Hora </th>
+                                            <td><input name="HrIni" id="HrIni" type="time" /></td>
+                                        </tr>
+                                        <tr hidden>
+                                            <th>Data Final</th>
+                                            <td><input name="DtFim" id="DtFim" type="date" /></td>
+                                        </tr>
+                                        <tr hidden>
+                                            <th>Hora Final</th>
+                                            <td><input name="HrFim" id="HrFim" type="time" /></td>
+                                        </tr>
+                                        <tr hidden>
+                                            <th>Tempo Decorrido</th>
+                                            <td><input name="Tempo" id="Tempo" type="text" readonly="readonly"
+                                                    value="00:00"></td>
+                                        </tr>
+                                        <tr>
+                                            <th>Observa&ccedil;&atilde;o</th>
+                                            <td><textarea name="Obs" id="Obs" rows="5"></textarea></td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2"><input type="button" id="confirmar" value="Confirmar"
+                                                    onclick="enviaForm()" /></td>
+                                        </tr>
+                                    </form>
+                                </table>
+                                <br />
+
+                                <div class="" id="retorno"></div>
+
+                                <div class="modulo">
+                                    <div class="topo">
+                                        <table>
+                                            <td><span class="tituloModulo"
+                                                    style="padding: 5px; text-align: left; font-size: 12pt;">Historico
+                                                    de Paradas </span></td>
+                                            <td style="padding: 5px; text-align: left; font-size: 9pt;"><button
+                                                    class="btn btn-danger glyphicon glyphicon-remove-circle"
+                                                    onclick="excluiParada()" /></td>
+                                            <td style="padding: 5px; text-align: left; font-size: 9pt;"><button
+                                                    class="btn btn-info glyphicon glyphicon-pencil"
+                                                    onclick="alteraParada()" /></td>
+                                        </table>
+                                    </div>
+                                    <div id="info_compl">
+                                        <div class="" id="historico"></div>
+                                    </div>
+                                </div>
+
+                                <div id="modal" class="modal bd-example-modal-lg" tabindex="-1" role="dialog">
+                                    <div class="modal-dialog modal-dialog modal-lg" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h3 class="modal-title"><strong>Edição de Parada:</strong></h3>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Fechar">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <table class="responsive" id="parApont">
+                                                    <thead>
+                                                        <th style="text-align:center">Mesa</th>
+                                                        <th style="text-align:center">Hora Inicial</th>
+                                                        <th style="text-align:center">Hora Final</th>
+                                                    </thead>
+                                                    <tr>
+
+                                                        <th style="text-align:center" hidden><input type="text" disabled
+                                                                id="numInput"></th>
+                                                        <th style="text-align:center"><input type="text"
+                                                                style="form-control" disabled id="alterMesa"></th>
+                                                        <th style="text-align:center"><input type="time"
+                                                                style="form-control" id="alterHIni"></th>
+                                                        <th style="text-align:center"><input type="time"
+                                                                style="form-control" id="alterHFim"></th>
+                                                    </tr>
+
+                                                </table>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-danger"
+                                                    onclick="$('#modal').hide();">Cancelar</button>
+                                                <button type="button" class="btn btn-primary"
+                                                    onclick="confAltera()">Salvar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <script>
+
+                                    $(function () {
+
+                                        var data = new Date();
+                                        var dia = data.getDate();
+                                        var mes = data.getMonth();
+                                        var ano4 = data.getFullYear();
+
+                                        var dia_c = dia;
+                                        if (dia < 10) {
+                                            dia_c = "0" + dia;
+                                        }
+
+                                        var mes_c = mes + 1;
+                                        if (mes + 1 < 10) {
+                                            mes_c = "0" + (mes + 1);
+                                        }
+
+                                        var str_data = ano4 + "-" + mes_c + "-" + dia_c;
+
+                                        $("#DtIni").val(str_data);
+                                        $("#DtFim").val(str_data);
+
+                                        $.ajax({
+                                            type: "GET",
+                                            url: "http://protheus.gvpbrasil.com.br:8989/rest/WsZZCMesa/" + $("#Filial").val(),
+                                            cache: false,
+                                            headers: {
+                                                "Content-type": "json"
+                                            },
+                                            success: function (data) {
+                                                $("#Mesa").append('\n<option value="0000">0000 - TODAS</option>');
+                                                $.each(data, function (index, value) {
+                                                    $("#Mesa").append('\n<option value="' + value["CCODIGO"] + '">' + value["CCODIGO"] + " - " + value["CDESCRICAO"] + '</option>');
+                                                });
+                                                changeMesa();
+                                            }
+
+                                        }).fail(function (jqXHR, textStatus, msg) {
+                                            $("#retorno").html('<p style="color: red;">Falha ao carregar mesas. Verifique se h&aacute; conex&atilde;o dispon&iacute;vel.</p>');
+                                        });
+
+                                        $.ajax({
+                                            type: "GET",
+                                            url: "http://protheus.gvpbrasil.com.br:8989/rest/WsZZVArea/",
+                                            cache: false,
+                                            headers: {
+                                                "Content-type": "json"
+                                            },
+                                            success: function (data) {
+                                                $.each(data, function (index, value) {
+                                                    $("#Area").append('\n<option value="' + value["CCODIGO"] + '">' + value["CCODIGO"] + " - " + value["CDESCRICAO"] + '</option>');
+                                                });
+                                                changeArea();
+                                            }
+
+                                        }).fail(function (jqXHR, textStatus, msg) {
+                                            $("#retorno").html('<p style="color: red;">Falha ao carregar areas. Verifique se h&aacute; conex&atilde;o dispon&iacute;vel.</p>');
+                                        });
+                                        GetTempo();
+                                    });
+
+                                    $("#Area").change(function () {
+                                        changeArea();
+                                    });
+
+                                    function changeArea() {
+                                        var id = $("#Area").val();
+
+                                        $.ajax({
+                                            type: "GET",
+                                            url: "http://protheus.gvpbrasil.com.br:8989/rest/WsZZVArea/" + id,
+                                            cache: false,
+                                            headers: {
+                                                "Content-type": "json"
+                                            },
+                                            success: function (data) {
+                                                $("#Problema").html("");
+                                                $.each(data, function (index, value) {
+                                                    $("#Problema").append('\n<option value="' + value["CSEQUENCIA"] + '">' + value["CSEQUENCIA"] + " - " + value["CDESCRICAO"] + '</option>');
+                                                });
+                                            }
+
+                                        }).fail(function (jqXHR, textStatus, msg) {
+                                            $("#retorno").html('<p style="color: red;">Falha ao carregar problemas. Verifique se h&aacute; conex&atilde;o dispon&iacute;vel.</p>');
+                                        });
+
+                                    }
+
+                                    $("#Mesa").change(function () {
+                                        changeMesa();
+                                    });
+
+                                    function changeMesa() {
+
+                                        $.ajax({
+                                            type: "GET",
+                                            url: "http://protheus.gvpbrasil.com.br:8989/rest/WsZZTAPara/" + $("#Filial").val() + "/" + $("#Mesa").val(),
+                                            cache: false,
+                                            headers: {
+                                                "Content-type": "json"
+                                            },
+                                            success: function (data) {
+                                                var Soma = 0;
+                                                $("#historico").html("");
+                                                $("#historico").append('\n<table class="responsive" style="text-align: left; font-size: 10pt;" >');
+
+                                                $("#historico").append("\n<tr>");
+                                                //$("#historico").append('\n<th style="padding: 5px; text-align: left; font-size: 9pt;"></th>');
+                                                $("#historico").append('\n<th style="padding: 5px; text-align: left; font-size: 9pt;"></th>');
+                                                $("#historico").append('\n<th style="padding: 5px; text-align: left; font-size: 9pt;">Mesa</th>');
+                                                $("#historico").append('\n<th style="padding: 5px; text-align: left; font-size: 9pt;">Inicio</th>');
+                                                $("#historico").append('\n<th style="padding: 5px; text-align: left; font-size: 9pt;">Fim</th>');
+                                                $("#historico").append('\n<th style="padding: 5px; text-align: left; font-size: 9pt;">Tempo</th>');
+                                                $("#historico").append('\n<th style="padding: 5px; text-align: left; font-size: 9pt;">Area</th>');
+                                                //$("#historico").append('\n<th style="padding: 5px; text-align: left; font-size: 9pt;">Problema</th>');
+                                                $("#historico").append("\n</tr>");
+
+                                                $.each(data, function (index, value) {
+                                                    Soma = Soma + value["QUANT"];
+                                                    $("#historico").append("\n<tr>");
+                                                    $("#historico").append('<td style="padding: 5px; text-align: left; font-size: 9pt;">\n<input type="radio" id="r' + index + '" name="hist" value="' + index + '" ></td>');
+                                                    //$("#historico").append('\n<td style="padding: 5px; text-align: left; font-size: 9pt;"><button class="btn btn-danger" onclick="excluiParada()">X</button></td>');
+                                                    //$("#historico").append('\n<td style="padding: 5px; text-align: left; font-size: 9pt;"><button class="btn btn-info glyphicon glyphicon-pencil" onclick="alteraParada()"></button></td>');
+                                                    $("#historico").append('\n<td style="padding: 5px; text-align: left; font-size: 9pt;">' + value["DESCMESA"] + '</td>');
+                                                    $("#historico").append('\n<td style="padding: 5px; text-align: left; font-size: 9pt;">' + value["DTINI"] + " " + value["HRINI"] + '</td>');
+                                                    $("#historico").append('\n<td style="padding: 5px; text-align: left; font-size: 9pt;">' + value["DTFIM"] + " " + value["HRFIM"] + '</td>');
+                                                    $("#historico").append('\n<input hidden id="codmesa' + index + '" value="' + value["CODMESA"] + '" >');
+                                                    $("#historico").append('\n<input hidden id="dtini' + index + '" value="' + value["DTINI"] + '" >');
+                                                    $("#historico").append('\n<input hidden id="hrini' + index + '" value="' + value["HRINI"] + '" >');
+                                                    $("#historico").append('\n<input hidden id="dtfim' + index + '" value="' + value["DTFIM"] + '" >');
+                                                    $("#historico").append('\n<input hidden id="hrfim' + index + '" value="' + value["HRFIM"] + '" >');
+                                                    $("#historico").append('\n<td style="padding: 5px; text-align: left; font-size: 9pt;">' + value["TEMPO"] + '</td>');
+                                                    $("#historico").append('\n<td style="padding: 5px; text-align: left; font-size: 9pt;">' + value["CODAREA"] + " - " + value["DESCAREA"] + '</td>');
+                                                    //$("#historico").append('\n<td style="padding: 5px; text-align: left; font-size: 9pt;">' + value["CODPROB"] + " - " + value["DESCPROB"] + '</td>');
+                                                    $("#historico").append("\n</tr>");
+                                                });
+
+                                                $("#historico").append("\n</table>");
+                                            }
+
+                                        }).fail(function (jqXHR, textStatus, msg) {
+                                            $("#retorno").html('<p style="color: red;">Falha ao carregar historico. Verifique se h&aacute; conex&atilde;o dispon&iacute;vel.</p>');
+                                        });
+
+                                        $.ajax({
+                                            type: "GET",
+                                            url: "http://protheus.gvpbrasil.com.br:8989/rest/WsZZUSetup/" + $("#Filial").val() + "/" + $("#Mesa").val(),
+                                            cache: false,
+                                            headers: {
+                                                "Content-type": "json"
+                                            },
+                                            success: function (data) {
+                                                $("#dados_setup").html("");
+
+                                                $.each(data, function (index, value) {
+                                                    //$("#dados_setup").append('\n<small style="color: black;">Ord.Prod: ' + value["SFILIAL"] + " Produto: " + value["CCODIGO"] + " Quantidade: " + value["CDESCRICAO"] + "</small>");
+                                                    $("#dados_setup").append('\n<small style="color: black; font-size:8pt;">Ord.Prod: ' + value["ORDPROD"] + " Produto: " + value["CODPROD"] + " Quantidade: " + value["QUANT"] + " Operador: " + value["NOMEOPER"] + "</small>");
+                                                });
+                                            }
+
+                                        }).fail(function (jqXHR, textStatus, msg) {
+                                            $("#retorno").html('<p style="color: red;">Falha ao carregar dados do setup. Verifique se h&aacute; conex&atilde;o dispon&iacute;vel.</p>');
+                                        });
+
+                                    }
+
+                                    function textoAleatorio(tamanho) {
+                                        var letras = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
+                                        var aleatorio = "";
+                                        for (var i = 0; i < tamanho; i++) {
+                                            var rnum = Math.floor(Math.random() * letras.length);
+                                            aleatorio += letras.substring(rnum, rnum + 1);
+                                        }
+                                        return aleatorio;
+                                    }
+
+                                    function enviaForm() {
+                                        var token = textoAleatorio(15);
+
+                                        $("#confirmar").prop("disabled", true);
+                                        $.ajax({
+                                            url: "http://protheus.gvpbrasil.com.br:8989/rest/WsZZTAPara"
+                                            , type: "post"
+                                            , data: {
+                                                Filial: $("#Filial").val(),
+                                                Mesa: $("#Mesa").val(),
+                                                //DtIni : $("#DtIni").val(),
+                                                HrIni: $("#HrIni").val(),
+                                                //DtFim : $("#DtFim").val(),
+                                                //HrFim : $("#HrFim").val(),
+                                                Obs: $("#Obs").val(),
+                                                Area: $("#Area").val(),
+                                                Problema: $("#Problema").val(),
+                                                token: token,
+                                                Setor: 2
+                                            }
+                                            , success: function (result) {
+                                                $("#retorno").html(result);
+                                                changeMesa();
+                                                $("#confirmar").prop("disabled", false);
+                                            }
+                                        })
+                                            .fail(function (jqXHR, textStatus, msg) {
+                                                $("#retorno").html('<p style="color: red;">Falha ao processar. Verifique se h&aacute; conex&atilde;o dispon&iacute;vel.</p>');
+                                            });
+                                    }
+
+                                    function excluiParada() {
+                                        var numInput = $('input[name="hist"]:checked').val();
+                                        if (numInput > -1) {
+                                            var r = confirm("Confirma a exclusão do apontamento?");
+                                            var InpMesa = "#codmesa" + numInput;
+                                            var InpData = "#dtini" + numInput;
+                                            var InpHr = "#hrini" + numInput;
+                                            CodMesa = $(InpMesa).val()
+                                            DataIni = $(InpData).val()
+                                            HrIni = $(InpHr).val()
+                                            if (r == true) {
+                                                $.ajax({
+                                                    url: "http://protheus.gvpbrasil.com.br:8989/rest/WsZZTAPara"
+                                                    , type: "delete"
+                                                    , data: {
+                                                        Filial: $("#Filial").val(),
+                                                        Mesa: CodMesa,
+                                                        Data: DataIni,
+                                                        HrIni: HrIni
+                                                    }
+                                                    , success: function (result) {
+                                                        $("#retorno").html(result);
+                                                    }
+                                                })
+                                                    .done(function (result) {
+                                                        changeMesa();
+                                                        //window.setTimeout("limpa_msg()", 7000);
+                                                    })
+                                                    .fail(function (jqXHR, textStatus, msg) {
+                                                        $("#retorno").html('<p style="color: red;">Falha ao processar. Verifique se h&aacute; conex&atilde;o dispon&iacute;vel.</p>');
+                                                    });
+                                            }
+                                        }
+                                    }
+
+                                    function alteraParada(numInput) {
+                                        var numInput = $('input[name="hist"]:checked').val();
+                                        var InpMesa = "#codmesa" + numInput;
+                                        var InpHrini = "#hrini" + numInput;
+                                        var InpHrfim = "#hrfim" + numInput;
+                                        $("#numInput").val(numInput);
+                                        $("#alterMesa").val($(InpMesa).val());
+                                        $("#alterHIni").val($(InpHrini).val().trim());
+                                        $("#alterHFim").val($(InpHrfim).val().trim());
+
+                                        $("#modal").show();
+                                    }
+
+                                    function confAltera(newhrIni, newHrFim) {
+                                        var numInput = $("#numInput").val();
+                                        var newhrIni = $("#alterHIni").val();
+                                        var newHrFim = $("#alterHFim").val();
+                                        var r = confirm("Confirma a alteração do apontamento?");
+                                        var InpMesa = "#codmesa" + numInput;
+                                        var InpData = "#dtini" + numInput;
+                                        var InpHr = "#hrini" + numInput;
+                                        CodMesa = $(InpMesa).val()
+                                        DataIni = $(InpData).val()
+                                        HrIni = $(InpHr).val()
+                                        if (r == true) {
+                                            $.ajax({
+                                                url: "http://protheus.gvpbrasil.com.br:8989/rest/WsZZTAPara"
+                                                , type: "put"
+                                                , data: {
+                                                    Filial: $("#Filial").val(),
+                                                    Mesa: CodMesa,
+                                                    Data: DataIni,
+                                                    HrIni: HrIni,
+                                                    NewHrIni: newhrIni,
+                                                    NweHrFim: newHrFim
+                                                }
+                                                , success: function (result) {
+                                                    $("#retorno").html(result);
+                                                }
+                                            })
+                                                .done(function (result) {
+                                                    changeMesa();
+                                                    //window.setTimeout("limpa_msg()", 7000);
+                                                })
+                                                .fail(function (jqXHR, textStatus, msg) {
+                                                    $("#retorno").html('<p style="color: red;">Falha ao processar. Verifique se h&aacute; conex&atilde;o dispon&iacute;vel.</p>');
+                                                });
+                                        }
+
+                                    }
+
+                                    $("#DtIni").blur(function () {
+                                        blurData();
+                                    });
+                                    $("#DtFim").blur(function () {
+                                        blurData();
+                                    });
+                                    $("#HrIni").blur(function () {
+                                        blurData();
+                                    });
+                                    $("#HrFim").blur(function () {
+                                        blurData();
+                                    });
+
+                                    function blurData() {
+                                        var dDtIni = $("#DtIni").val();
+                                        var cHrIni = $("#HrIni").val();
+                                        var dDtFim = $("#DtFim").val();
+                                        var cHrFim = $("#HrFim").val();
+
+                                        if ((dDtIni != "") && (cHrIni != "") && (dDtFim != "") && (cHrFim != "")) {
+
+                                            var data1 = new Date(dDtIni + " " + cHrIni);
+                                            var data2 = new Date(dDtFim + " " + cHrFim);
+
+                                            var difMili = Math.abs(data1 - data2);
+                                            var difHor = difMili / 60 / 60 / 1000;
+
+                                            var difHorE = Math.trunc(difHor);
+                                            difMin = Math.round((difHor - difHorE) * 60, 0);
+
+                                            var cHoras = difHorE.toString();
+                                            if (difHorE <= 9) {
+                                                cHoras = "0" + difHorE.toString();
+                                            }
+
+                                            var cMinutos = difMin.toString();
+                                            if (difMin <= 9) {
+                                                cMinutos = "0" + difMin.toString();
+                                            }
+
+                                            $("#Tempo").val(cHoras + ":" + cMinutos);
+
+                                        } else {
+                                            $("#Tempo").val("00:00");
+                                        }
+                                    }
+                                </script>
+
+                                <small></small>
+                            </h1>
+                            <h6 style=" text-align: left;"><small>Responsável:</small> GVP </h6>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    </div>
+    <div class="" id="loader">
+        <div class='uil-facebook-css' style='-webkit-transform:scale(0.6)'>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <span><br><br><br>Carregando dados...</span>
+    </div>
+
+    <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="js/foundation.js"></script>
+    <script type="text/javascript" src="js/graficos/amcharts.js"></script>
+    <script type="text/javascript" src="js/graficos/pie.js"></script>
+    <script type="text/javascript" src="js/graficos/serial.js"></script>
+    <script type="text/javascript" src="js/graficos/gauge.js"></script>
+    <script type="text/javascript" src="js/graficos/themes/light.js"></script>
+
+    <script type="text/javascript" src="js/graficos/lang/pt.js"></script>
+
+
+
+
+
+
+
+    <script>
+        $(document).ready(function () {
+            $("#loader").hide();
+
+            $(document).foundation();
+
+            $(".off-canvas-submenu").hide();
+
+            $(".off-canvas-submenu-call").click(function () {
+
+                var icon = $(this).parent().next(".off-canvas-submenu").is(':visible') ? '+' : '-';
+
+                $(this).parent().next(".off-canvas-submenu").slideToggle('fast');
+
+                $(this).find("span").text(icon);
+
+            });
+
+
+
+
+            var d = new Date();
+            var n = d.getTime();
+            var menu = "menu.html?v=" + n;
+
+            $.ajax({
+                url: menu, success: function (result) {
+
+                    $("#menu").html(result);
+
+                }
+            });
+            $("body").on("contextmenu", function (e) {
+                return false;
+            });
+        });
+    </script>
+</body>
+
+</html>
